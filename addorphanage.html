@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Orphanage-OrphanageCare Hub</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Add your existing CSS styles here */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        /* Style for the map */
+        #map {
+            height: 300px; /* Set the height of the map */
+            margin-bottom: 15px; /* Spacing below the map */
+            border-radius: 5px; /* Rounded corners */
+        }
+        .redirect-btn {
+    background-color: #21de00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.redirect-btn:hover {
+    background-color: #216911;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Add Orphanage</h1>
+    <div class="form-container">
+        <form id="orphanageForm">
+            <div class="form-group">
+                <label for="orphanageName">Orphanage Name:</label>
+                <input type="text" id="orphanageName" required>
+            </div>
+            <div class="form-group">
+                <label for="principalName">Principal Name:</label>
+                <input type="text" id="principalName" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" required>
+            </div>
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" required>
+            </div>
+            <div class="form-group">
+                <label for="numChildren">Number of Children:</label>
+                <input type="number" id="numChildren" required>
+            </div>
+            <div class="form-group">
+                <label for="needs">Current Needs:</label>
+                <textarea id="needs" rows="10" cols="75"></textarea>
+
+            </div>
+            <div class="form-group">
+                <label for="latitude">Latitude:</label>
+                <input type="text" id="latitude" required>
+            </div>
+            <div class="form-group">
+                <label for="longitude">Longitude:</label>
+                <input type="text" id="longitude" required>
+            </div>
+            <div class="form-group">
+                <label for="portNumber">Orphanage ID:</label>
+                <input type="text" id="portNumber" required>
+                <p id="portNumberError" class="error" style="display: none;">Port number already used</p>
+            </div>
+            <div class="form-group">
+                <label for="map">Location on Map:</label>
+                <div id="map"></div> <!-- Map container -->
+            </div>
+            <button type="submit" class="submit-btn">Add Orphanage</button>
+        </form>
+    </div>
+    <button class="redirect-btn" onclick="redirectToHome()">Back to Home</button>
+
+    <!-- Load Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([18.09238784376152, 438.852035526652], 8); // Default location
+
+        // Load and display tile layers
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let marker = L.marker([-34.397, 150.644], { draggable: true }).addTo(map); // Default marker
+
+        // Update latitude and longitude fields when the marker is moved
+        marker.on('dragend', function (event) {
+            const position = marker.getLatLng();
+            document.getElementById('latitude').value = position.lat;
+            document.getElementById('longitude').value = position.lng;
+        });
+
+        // Add click event listener to the map
+        map.on('click', function (event) {
+            marker.setLatLng(event.latlng);
+            document.getElementById('latitude').value = event.latlng.lat;
+            document.getElementById('longitude').value = event.latlng.lng;
+        });
+
+        document.getElementById('orphanageForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const orphanageData = {
+                orphanageName: document.getElementById('orphanageName').value,
+                principalName: document.getElementById('principalName').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                address: document.getElementById('address').value,
+                numChildren: document.getElementById('numChildren').value,
+                needs: document.getElementById('needs').value,
+                latitude: document.getElementById('latitude').value,
+                longitude: document.getElementById('longitude').value,
+                portNumber: document.getElementById('portNumber').value
+            };
+
+            try {
+                // Check if port number is unique
+                const response = await fetch(`http://localhost:5001/check-port-number/${orphanageData.portNumber}`);
+                const data = await response.json();
+
+                if (!data.isUnique) {
+                    // Display error message
+                    document.getElementById('portNumberError').style.display = 'block';
+                } else {
+                    // Port number is unique, proceed with adding orphanage details
+                    const addResponse = await fetch('http://localhost:5001/add-orphanage', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(orphanageData)
+                    });
+
+                    const result = await addResponse.json();
+                    alert(result.message); // Show success or error message
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        function redirectToHome() {
+    window.location.href = 'index.html';
+}
+    </script>
+</body>
+</html>

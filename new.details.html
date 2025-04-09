@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orphanage Details-OrphanageCare Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            margin: 15px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button1{
+            height: 40px;
+            width:120px;
+            background-color: rgb(64, 64, 222);
+        }
+        .button1:hover{
+            background-color: rgb(37, 37, 78);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Add New Orphanage</h2>
+        <button id="addOrphanageBtn">Add New Orphanage</button>
+        <p>If you have previously added or Now added your orphanage details, you can view them below.</p>
+        <button id="viewDetailsBtn">View Your Orphanage Details</button>
+    </div>
+
+    <!-- Modal to enter Port Number -->
+    <div id="portModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Enter Orphanage ID</h3>
+            <input type="text" id="portNumberInput" placeholder="Enter Orphanage ID" />
+            <button id="submitPortBtn">Submit</button>
+        </div>
+    </div>
+    <button class="button1" onclick="redirectohome()">Back To Home</button>
+
+    <script>
+        document.getElementById('addOrphanageBtn').addEventListener('click', function() {
+            window.location.href = 'addorphanage.html'; // Redirect to add orphanage page
+        });
+
+        // Handle "View Your Orphanage Details" button
+        document.getElementById('viewDetailsBtn').addEventListener('click', function() {
+            document.getElementById('portModal').style.display = 'block'; // Show the modal
+        });
+
+        // Close modal when clicking on "x"
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('portModal').style.display = 'none'; // Hide modal
+        });
+
+        // Submit port number
+        document.getElementById('submitPortBtn').addEventListener('click', async function() {
+    const portNumber = document.getElementById('portNumberInput').value;
+
+    try {
+        // Make a request to the server to check the port number
+        const response = await fetch(`http://localhost:5001/check-port-number/${portNumber}`);
+        
+        // Check if the response is OK
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        if (data.isUnique === false) {
+            // If port number exists, redirect to editorphanage.html with the port number
+            window.location.href = `editorphanage.html?portNumber=${portNumber}`;
+        } else {
+            alert('Port number not found.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to check port number: ' + error.message); // Display a more detailed error message
+    }
+});
+function redirecttohome(){
+    window.location.href="index.html";
+}
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Registration -OrphanageCare Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .container input[type="text"],
+        .container input[type="email"],
+        .container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .container button {
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+        }
+
+        .container button:hover {
+            background-color: #218838;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Your Support</h1>
+    </header>
+
+    <div class="container">
+        <h2>Register as Donor</h2>
+        <form id="donorForm">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password">Create Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="back-link">
+            <a href="index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('donorForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevent the form from submitting the traditional way
+
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+    };
+
+    try {
+        const response = await fetch('http://localhost:5001/register-donor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const data = await response.json(); // Parse the response JSON
+         // Redirect to index.html if registration is successful
+         if (response.ok) {
+                    window.location.href = 'index.html';
+                }
+
+        // Check if the response is OK (201 status) or has an error (400 status)
+        if (response.ok) {
+            alert(data.message); // Show success message
+            document.getElementById('donorForm').reset(); // Reset the form
+        } else {
+            alert(data.message); // Show the error message (e.g., "Already registered")
+        }
+    } catch (error) {
+        alert('An error occurred: ' + error.message);
+    }
+});
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orphanage Details - OrphanageCare Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .details-container {
+            background-color: #fff;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .details-container p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+        .back-btn, .map-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            margin: 20px auto;
+            text-decoration: none;
+        }
+        .back-btn:hover, .map-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Orphanage Details</h1>
+
+    <div class="details-container" id="orphanageDetails">
+        <!-- Orphanage details will be displayed here -->
+    </div>
+
+    <button class="back-btn" onclick="goBack()">Back to List</button>
+    <a id="mapLink" class="map-btn" style="display:none" target="_blank">View on Maps</a>
+
+    <script>
+        // Function to go back to the orphanage list page
+        function goBack() {
+            window.history.back();
+        }
+
+        // Function to fetch orphanage details by ID
+        async function fetchOrphanageDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orphanageId = urlParams.get('id');
+
+            if (!orphanageId) {
+                document.getElementById('orphanageDetails').innerHTML = '<p>No orphanage ID found in the URL.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5001/orphanage-details/${orphanageId}`);
+                const orphanage = await response.json();
+
+                if (response.ok) {
+                    displayOrphanageDetails(orphanage);
+                } else {
+                    document.getElementById('orphanageDetails').innerHTML = `<p>${orphanage.message}</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching orphanage details:', error);
+                document.getElementById('orphanageDetails').innerHTML = '<p>An error occurred while fetching the details.</p>';
+            }
+        }
+
+        // Function to display orphanage details on the page
+        function displayOrphanageDetails(orphanage) {
+            const detailsContainer = document.getElementById('orphanageDetails');
+            detailsContainer.innerHTML = `
+                <p><strong>Orphanage Name:</strong> ${orphanage.orphanageName}</p>
+                <p><strong>Principal Name:</strong> ${orphanage.principalName}</p>
+                <p><strong>City:</strong> ${orphanage.city}</p>
+                <p><strong>State:</strong> ${orphanage.state}</p>
+                <p><strong>Address:</strong> ${orphanage.address}</p>
+                <p><strong>Number of Children:</strong> ${orphanage.numChildren}</p>
+                <p><strong>Current Needs:</strong> ${orphanage.needs}</p>
+                <p><strong>Latitude:</strong> ${orphanage.latitude}</p>
+                <p><strong>Longitude:</strong> ${orphanage.longitude}</p>
+            `;
+
+            createMapLink(orphanage.latitude, orphanage.longitude);
+        }
+
+        // Function to create Google Maps link with directions
+        function createMapLink(lat, lng) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const currentLat = position.coords.latitude;
+                    const currentLng = position.coords.longitude;
+                    
+                    const mapLink = document.getElementById('mapLink');
+                    mapLink.href = `https://www.google.com/maps/dir/?api=1&origin=${currentLat},${currentLng}&destination=${lat},${lng}&travelmode=driving`;
+                    mapLink.style.display = 'inline-block';
+                }, error => {
+                    console.error('Error getting current location:', error);
+                    alert('Unable to retrieve your location.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        // Fetch orphanage details on page load
+        window.onload = fetchOrphanageDetails;
+    </script>
+</body>
+</html>

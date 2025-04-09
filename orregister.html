@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Orphanage-OrphanageCare Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 10px; /* Space between buttons */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-btn {
+            background-color: #6c757d;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <h1>Register Orphanage</h1>
+    <div class="form-container">
+        <form id="orphanageRegisterForm">
+            <label for="headName">Orphanage Head Name:</label>
+            <input type="text" id="headName" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+
+            <label for="password">Create Password:</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Register</button>
+            <button type="button" class="back-btn" onclick="goHome()">Back to Home</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('orphanageRegisterForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+    
+            const headName = document.getElementById('headName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+    
+            // Validation for name - only alphabets allowed
+            const namePattern = /^[A-Za-z\s]+$/;
+            if (!namePattern.test(headName)) {
+                alert("Name can only contain alphabets.");
+                return;
+            }
+    
+            // Validation for email - must end with @gmail.com
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            if (!emailPattern.test(email)) {
+                alert("Email must be a valid @gmail.com address.");
+                return;
+            }
+    
+            // Validation for password - minimum 8 characters, includes at least one uppercase letter, one number, and one special character
+            const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+            if (!passwordPattern.test(password)) {
+                alert("Password must be at least 8 characters long, include at least one uppercase letter, one number, and one special character.");
+                return;
+            }
+    
+            // Send data to the server if all validations pass
+            try {
+                const response = await fetch('http://localhost:5001/register-orphanage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ headName, email, password }),
+                });
+    
+                const result = await response.json();
+                alert(result.message);
+    
+                // Redirect to index.html if registration is successful
+                if (response.ok) {
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred during registration. Please try again.");
+            }
+        });
+    
+        // Function to go back to the home page
+        function goHome() {
+            window.location.href = 'index.html'; // Redirect to index.html
+        }
+    </script>
+    
+</body>
+</html>

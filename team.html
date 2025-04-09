@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team-OrphanageCare Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e9ecef; /* Light gray background */
+            color: #333;
+        }
+
+        header {
+    background-color: rgba(0, 0, 0, 0.97);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+}
+
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 60px; /* Adjust logo size */
+    height: auto;
+    border-radius: 20px;
+}
+
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .team-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* Highlighted CEO image */
+        .highlighted-member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .highlighted-member img {
+            width: 220px; /* Larger size for CEO */
+            height: 220px; /* Larger size for CEO */
+            border-radius: 50%;
+            border: 5px solid #FFD700; /* Golden border */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4), 0 0 20px #FFD700; /* Shadow with golden glow */
+        }
+
+        .highlighted-member h2 {
+            margin-top: 15px;
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .highlighted-member p {
+            margin: 5px 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .member h3 {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #444;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Meet Our Team</h1>
+        
+            <img src="ourlogo.jpg" alt="Logo" class="logo"> <!-- Update with your logo path -->
+        
+        
+        
+    </header>
+
+    <div class="team-container">
+
+        <!-- Highlighted CEO -->
+        <div class="highlighted-member">
+            <img src="rohith.jpg" alt="Highlighted Member"> <!-- Update this path -->
+            <h2>Rohith Vadla</h2>
+            <p>Team Leader</p>
+        </div>
+
+        <!-- Other team members -->
+        <div class="member-grid">
+            <div class="member">
+                <img src="sathwik.jpg" alt="Member 1"> <!-- Update this path -->
+                <h3>Sathwik Chelloju</h3>
+                <p>Member 1</p>
+            </div>
+            <div class="member">
+                <img src="vamshi.jpg" alt="Member 2"> <!-- Update this path -->
+                <h3>Vamshi Govindaram</h3>
+                <p>Member 2</p>
+            </div>
+            <div class="member">
+                <img src="raju.jpg" alt="Member 3"> <!-- Update this path -->
+                <h3>Raju Karee</h3>
+                <p>Member 3</p>
+            </div>
+            <div class="member">
+                <img src="sai.jpg" alt="Member 4"> <!-- Update this path -->
+                <h3>Sai Kumar Vemula</h3>
+                <p>Member 4</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Your Support. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Orphanage Details-OrphanageCare Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+        .button1{
+            background-color: #1660f4;
+            width:150px;
+            height:40;
+        }
+        .button1:hover{
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Edit Orphanage Details</h2>
+        <input type="text" id="orphanageName" placeholder="Orphanage Name">
+        <input type="text" id="principalName" placeholder="Principal Name">
+        <input type="text" id="city" placeholder="City">
+        <input type="text" id="state" placeholder="State">
+        <input type="text" id="address" placeholder="Address">
+        <input type="number" id="numChildren" placeholder="Number of Children">
+        <label for="needs">Current Needs:</label>
+                <textarea id="needs" rows="10" cols="50"></textarea>
+
+        <input type="text" id="latitude" placeholder="Latitude">
+        <input type="text" id="longitude" placeholder="Longitude">
+        <button id="saveChangesBtn">Save Changes</button>
+    </div>
+    <button class="button1" onclick="window.location.href='index.html'">Back To Home</button>
+
+    <script>
+        // Get the port number from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const portNumber = new URLSearchParams(window.location.search).get('portNumber');
+
+    
+        // Fetch orphanage details based on the port number
+        fetch(`/get-OrphanageDetails-by-port/${portNumber}`)
+            .then(response => response.json())
+            .then(data=> {
+                // Populate the form with the orphanage details
+                document.getElementById('orphanageName').value = data.orphanageName;
+                document.getElementById('principalName').value = data.principalName;
+                document.getElementById('city').value = data.city;
+                document.getElementById('state').value = data.state;
+                document.getElementById('address').value = data.address;
+                document.getElementById('numChildren').value = data.numChildren;
+                document.getElementById('needs').value = data.needs;
+                document.getElementById('latitude').value = data.latitude;
+                document.getElementById('longitude').value = data.longitude;
+            });
+    
+        // Handle save changes
+        document.getElementById('saveChangesBtn').addEventListener('click', async function() {
+    const orphanageDetails = {
+        orphanageName: document.getElementById('orphanageName').value,
+        principalName: document.getElementById('principalName').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        address: document.getElementById('address').value,
+        numChildren: document.getElementById('numChildren').value,
+        needs: document.getElementById('needs').value,
+        latitude: document.getElementById('latitude').value,
+        longitude: document.getElementById('longitude').value
+    };
+
+    try {
+        const response = await fetch(`http://localhost:5001/update-OrphanageDetails/${portNumber}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orphanageDetails),  // Convert the object to a JSON string
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message);
+        }
+
+        const result = await response.json();
+        alert(result.message);
+    } catch (error) {
+        console.error('Failed to update orphanage:', error);
+        alert('Failed to update orphanage details. Please try again.');
+    }
+});
+
+    </script>
+
+    
+</body>
+</html>
